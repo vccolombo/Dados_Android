@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context="br727356.ufscar.comp.httpwww2.dados.MainActivity">
 
+    <ImageButton
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/actionOverflowButtonStyle"
+        android:onClick="showPopup"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
 
     <ImageView
         android:id="@+id/dado2"
@@ -32,3 +40,5 @@
         app:layout_constraintVertical_bias="0.498" />
 
 </android.support.constraint.ConstraintLayout>
+
+

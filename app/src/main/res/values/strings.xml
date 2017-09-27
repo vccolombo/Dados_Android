@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Dados</string>
+    <string name="ask_quantity">Quantas pessoas estão jogando?</string>
+    <string name="Button_ahmp">Play!</string>
 </resources>

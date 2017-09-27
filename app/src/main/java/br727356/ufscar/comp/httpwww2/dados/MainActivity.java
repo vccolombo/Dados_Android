@@ -1,15 +1,22 @@
 package br727356.ufscar.comp.httpwww2.dados;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -23,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private ImageView dado1;
     private ImageView dado2;
 
+    private int players;
+    private int counter;
+
+    private boolean mariana;
+
     int[] p = {R.drawable.dado1, R.drawable.dado2, R.drawable.dado3, R.drawable.dado4, R.drawable.dado5, R.drawable.dado6};
 
 
@@ -32,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(HowManyPlayers.EXTRA_MESSAGE);
+
+        players = Integer.valueOf(message);
+        counter = 0;
+        mariana = false;
 
         dado1 = (ImageView) findViewById(R.id.dado1);
         dado2 = (ImageView) findViewById(R.id.dado2);
@@ -57,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
+
+
     }
 
     private void handleShakeEvent(int count) {
@@ -66,6 +86,15 @@ public class MainActivity extends AppCompatActivity {
 
         dado1.setImageResource(p[gerador.nextInt(6)]);
         dado2.setImageResource(p[gerador.nextInt(6)]);
+
+
+        if((++counter % players) == 1 && mariana) //Mariana checker
+        {
+            dado1.setImageResource(p[5]);
+            dado2.setImageResource(p[5]);
+        }
+
+
         mVibrator.vibrate(500);
     }
 
@@ -82,4 +111,54 @@ public class MainActivity extends AppCompatActivity {
         mSensorManager.unregisterListener(mShakeDetector);
         super.onPause();
     }
+
+    public void showPopup(View v) {
+        Log.d("MainActivity", "Inflar");
+
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.actions, popup.getMenu());
+
+
+        popup.show();
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.modo_mariana)
+                {
+                    Log.d("MainActivity", "Modo Mariana");
+                    if(mariana == true)
+                    {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Modo Mariana desativado";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        mariana = false;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                    }
+                    else
+                    {
+                        Context context = getApplicationContext();
+                        CharSequence text = "Modo Mariana ATIVADO";
+                        int duration = Toast.LENGTH_SHORT;
+
+                        mariana = false;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
+
+                        mariana = true;
+                    }
+                    counter = 0;
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+
+
 }
