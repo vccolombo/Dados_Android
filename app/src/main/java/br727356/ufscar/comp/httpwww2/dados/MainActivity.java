@@ -38,6 +38,14 @@ public class MainActivity extends AppCompatActivity {
     int[] p = {R.drawable.dado1, R.drawable.dado2, R.drawable.dado3, R.drawable.dado4, R.drawable.dado5, R.drawable.dado6};
 
 
+    //Quero finalizar a activity só se o how_many deu certo
+    //Quero salvar algo por all programa
+    //Quero um textview clicavel?
+    //Quero uma main activity que recebe um intent, mas saiba quando nao vem nenhum intent e trate isso
+    //Quero um about que esconda o modo mariana
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +54,16 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String message = intent.getStringExtra(HowManyPlayers.EXTRA_MESSAGE);
+        String modo_mariana_intent = intent.getStringExtra(HowManyPlayers.MARIANA);
 
         players = Integer.valueOf(message);
         counter = 0;
         mariana = false;
+        if(Integer.valueOf(modo_mariana_intent) == 1)
+        {
+            showMarianaStatus("Modo Mariana ATIVADO");
+            mariana = true;
+        }
 
         dado1 = (ImageView) findViewById(R.id.dado1);
         dado2 = (ImageView) findViewById(R.id.dado2);
@@ -129,34 +143,35 @@ public class MainActivity extends AppCompatActivity {
                 if(item.getItemId() == R.id.modo_mariana)
                 {
                     Log.d("MainActivity", "Modo Mariana");
-                    if(mariana == true)
+                    if(mariana)
                     {
-                        Context context = getApplicationContext();
-                        CharSequence text = "Modo Mariana desativado";
-                        int duration = Toast.LENGTH_SHORT;
+                        showMarianaStatus("Modo Mariana desativado");
 
                         mariana = false;
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.show();
                     }
                     else
                     {
-                        Context context = getApplicationContext();
-                        CharSequence text = "Modo Mariana ATIVADO";
-                        int duration = Toast.LENGTH_SHORT;
 
-                        mariana = false;
-                        Toast toast = Toast.makeText(context, text, duration);
-                        toast.show();
-
-                        mariana = true;
+                        Intent intent = new Intent(MainActivity.this, HowManyPlayers.class);
+                        startActivity(intent);
                     }
-                    counter = 0;
+
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+    public void showMarianaStatus(String s)
+    {
+        Context context = getApplicationContext();
+        CharSequence text = s;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
     }
 
 
