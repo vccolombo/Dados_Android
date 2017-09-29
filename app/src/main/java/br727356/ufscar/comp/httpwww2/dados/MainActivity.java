@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -35,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mariana;
 
+    private float x1, x2;
+    private float y1, y2;
+    private static final float swapdistance = 150;
+
     int[] p = {R.drawable.dado1, R.drawable.dado2, R.drawable.dado3, R.drawable.dado4, R.drawable.dado5, R.drawable.dado6};
 
 
@@ -43,14 +48,14 @@ public class MainActivity extends AppCompatActivity {
     //Quero um textview clicavel?
     //Quero uma main activity que recebe um intent, mas saiba quando nao vem nenhum intent e trate isso
     //Quero um about que esconda o modo mariana
-
+    //extends appcompatactivity?
+    //copiar um objeto para outro?
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         Intent intent = getIntent();
         String message = intent.getStringExtra(HowManyPlayers.EXTRA_MESSAGE);
@@ -84,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 				 * method you would use to setup whatever you want done once the
 				 * device has been shook.
 				 */
-                handleShakeEvent(count);
+                handleShakeEvent();
             }
 
 
@@ -93,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void handleShakeEvent(int count) {
+    private void handleShakeEvent() {
         Random gerador = new Random();
         //Log.d("MainActivity", String.valueOf(p[gerador.nextInt(6)]));
         //Log.d("MainActivity", String.valueOf(p[gerador.nextInt(6)]));
@@ -116,16 +121,41 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         // Add the following line to register the Session Manager Listener onResume
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
     public void onPause() {
         // Add the following line to unregister the Sensor Manager onPause
+        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mSensorManager.unregisterListener(mShakeDetector);
         super.onPause();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        switch (event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                y1 = event.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                y2 = event.getY();
+                if(Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)) > swapdistance)
+                {
+                    handleShakeEvent();
+                }
+                break;
+        }
+
+        return super.onTouchEvent(event);
+
+
+    }
     public void showPopup(View v) {
         Log.d("MainActivity", "Inflar");
 

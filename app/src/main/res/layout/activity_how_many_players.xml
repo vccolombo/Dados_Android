@@ -10,6 +10,8 @@
         android:layout_width="368dp"
         android:layout_height="wrap_content"
         android:text="@string/ask_quantity"
+        android:layout_marginTop="130dp"
+        android:textSize="22sp"
         android:textAlignment="center"/>
 
     <EditText
@@ -26,6 +28,7 @@
         android:id="@+id/Button"
         android:onClick="OpenMain"
         android:layout_below="@id/number"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:padding="20dp"/>
 
 </RelativeLayout>
