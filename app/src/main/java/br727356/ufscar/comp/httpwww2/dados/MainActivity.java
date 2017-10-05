@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+
+    static final int REQUEST_NUMBER_PLAYERS = 1;
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
@@ -57,18 +60,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(HowManyPlayers.EXTRA_MESSAGE);
-        String modo_mariana_intent = intent.getStringExtra(HowManyPlayers.MARIANA);
-
-        players = Integer.valueOf(message);
+        players = 1;
         counter = 0;
         mariana = false;
-        if(Integer.valueOf(modo_mariana_intent) == 1)
-        {
-            showMarianaStatus("Modo Mariana ATIVADO");
-            mariana = true;
-        }
 
         dado1 = (ImageView) findViewById(R.id.dado1);
         dado2 = (ImageView) findViewById(R.id.dado2);
@@ -99,13 +93,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleShakeEvent() {
-        Random gerador = new Random();
-        //Log.d("MainActivity", String.valueOf(p[gerador.nextInt(6)]));
-        //Log.d("MainActivity", String.valueOf(p[gerador.nextInt(6)]));
+        final Random gerador = new Random();
 
         dado1.setImageResource(p[gerador.nextInt(6)]);
         dado2.setImageResource(p[gerador.nextInt(6)]);
-
 
         if((++counter % players) == 1 && mariana) //Mariana checker
         {
@@ -183,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                     {
 
                         Intent intent = new Intent(MainActivity.this, HowManyPlayers.class);
-                        startActivity(intent);
+                        startActivityForResult(intent, REQUEST_NUMBER_PLAYERS);
                     }
 
                     return true;
@@ -191,6 +182,22 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        // Check which request we're responding to
+        if (requestCode == REQUEST_NUMBER_PLAYERS) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                String message = intent.getStringExtra(HowManyPlayers.EXTRA_MESSAGE);
+
+                players = Integer.valueOf(message);
+                counter = 0;
+                showMarianaStatus("Modo Mariana ATIVADO");
+                mariana = true;
+            }
+        }
     }
 
     public void showMarianaStatus(String s)

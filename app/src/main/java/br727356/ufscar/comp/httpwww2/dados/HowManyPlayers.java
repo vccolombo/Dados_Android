@@ -11,7 +11,6 @@ import android.widget.EditText;
 public class HowManyPlayers extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE = "br727356.ufscar.comp.httpwww2.dados";
-    public static final String MARIANA = "MARIANA_MODE_STATUS";
     private Button mButton;
     private EditText mEdit;
 
@@ -28,13 +27,13 @@ public class HowManyPlayers extends AppCompatActivity {
 
     public void OpenMain(View view)
     {
-        if(mEdit.getText().toString().isEmpty());
+        String s = mEdit.getText().toString();
+        if(s.isEmpty() || Integer.valueOf(s) == 0);
         else {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent();
             String jogadores = mEdit.getText().toString();
             intent.putExtra(EXTRA_MESSAGE, jogadores);
-            intent.putExtra(MARIANA, "1");
-            startActivity(intent);
+            this.setResult(RESULT_OK, intent);
             finish();
         }
     }

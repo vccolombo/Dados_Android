@@ -23,8 +23,6 @@ public class Inicializer extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = new Intent(Inicializer.this, MainActivity.class);
-                intent.putExtra(HowManyPlayers.EXTRA_MESSAGE, "1");
-                intent.putExtra(HowManyPlayers.MARIANA, "0");
                 startActivity(intent);
                 finish();
             }
